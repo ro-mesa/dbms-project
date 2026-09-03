@@ -25,7 +25,7 @@ if conn:
         df = pd.read_sql(query, conn)
 
         st.subheader("Browse Recipes")
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df,width="stretch")
 
     except Exception as e:
         st.error(f"Error executing query: {e}")
