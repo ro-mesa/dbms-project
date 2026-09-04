@@ -1,0 +1,1 @@
+-- in this file all those queries would be written that have been taught in lab 1 - 4 

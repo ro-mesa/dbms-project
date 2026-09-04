@@ -1,0 +1,1 @@
+--in this file all those queries and methods would be implemented that would be taught in lab 6-9
