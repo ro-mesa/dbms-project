@@ -67,7 +67,7 @@ CREATE TABLE recipe_ingredients (
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id) ON DELETE RESTRICT
 );
 
--- 7. Nutrition Table (1-to-1 with Recipes)
+-- 7. Nutrition Table (1-to-1 with Recipes) 
 CREATE TABLE nutrition (
     nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
     recipe_id INT UNIQUE NOT NULL,
@@ -216,3 +216,4 @@ INSERT INTO meal_plans (user_id, recipe_id, meal_date, meal_type) VALUES
 (4, 5, '2026-09-06', 'Breakfast'),
 (5, 2, '2026-09-05', 'Lunch'),
 (5, 8, '2026-09-06', 'Snack');
+
