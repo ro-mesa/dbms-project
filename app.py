@@ -49,23 +49,36 @@ def execute_commit(query, params=None):
             conn.close()
     return None
 
-# Mapping food keywords to fallback Unsplash food images
+# Reliable fallback images (All tested Unsplash links)
 FALLBACK_IMAGES = {
     "pizza": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop",
     "pasta": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop",
+    "carbonara": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&auto=format&fit=crop",
     "cake": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop",
     "burger": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop",
     "tea": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop",
     "chai": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop",
     "biryani": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop",
     "tiramisu": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&auto=format&fit=crop",
+    "wedge": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop",
+    "potato": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop",
+    "wrap": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&auto=format&fit=crop",
+    "salad": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop",
     "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop"
 }
 
-def get_recipe_image(title):
+def get_recipe_image(title, custom_url=None):
+    # 1. Use the explicitly provided custom URL if valid
+    if custom_url and pd.notna(custom_url) and str(custom_url).strip():
+        return str(custom_url).strip()
+    
+    # 2. Match keyword in title
+    title_lower = title.lower() if title else ""
     for kw, url in FALLBACK_IMAGES.items():
-        if kw in title.lower():
+        if kw != "default" and kw in title_lower:
             return url
+            
+    # 3. Fallback to default
     return FALLBACK_IMAGES["default"]
 
 # -----------------------------------------------------------------------------
@@ -73,17 +86,22 @@ def get_recipe_image(title):
 # -----------------------------------------------------------------------------
 @st.dialog("Recipe Details")
 def show_recipe_modal(recipe_id, title):
-    st.subheader(title)
-    st.image(get_recipe_image(title), use_container_width=True)
-    
     detail_query = """
-        SELECT r.instructions, r.prep_time, r.servings, r.difficulty_level,
+        SELECT r.instructions, r.image_url, r.prep_time, r.servings, r.difficulty_level,
                n.calories, n.protein, n.carbs, n.fats
         FROM recipes r
         LEFT JOIN nutrition n ON r.recipe_id = n.recipe_id
         WHERE r.recipe_id = %s;
     """
     df = run_query(detail_query, (recipe_id,))
+    
+    img_url = None
+    if not df.empty:
+        rec = df.iloc[0]
+        img_url = rec.get("image_url")
+    
+    st.subheader(title)
+    st.image(get_recipe_image(title, img_url), use_container_width=True)
     
     if not df.empty:
         rec = df.iloc[0]
@@ -133,7 +151,7 @@ def show_recipe_modal(recipe_id, title):
 @st.dialog("✏️ Edit Recipe")
 def show_edit_modal(recipe_id):
     rec_query = """
-        SELECT r.title, r.instructions, r.prep_time, r.servings, r.difficulty_level,
+        SELECT r.title, r.instructions, r.image_url, r.prep_time, r.servings, r.difficulty_level,
                n.calories, n.protein, n.carbs, n.fats
         FROM recipes r
         LEFT JOIN nutrition n ON r.recipe_id = n.recipe_id
@@ -148,6 +166,8 @@ def show_edit_modal(recipe_id):
     
     with st.form("edit_recipe_form"):
         new_title = st.text_input("Recipe Title", value=current["title"])
+        new_img_url = st.text_input("Image URL", value=current["image_url"] if pd.notna(current["image_url"]) else "")
+        
         c1, c2, c3 = st.columns(3)
         diff_list = ["Easy", "Medium", "Hard"]
         diff_index = diff_list.index(current["difficulty_level"]) if current["difficulty_level"] in diff_list else 0
@@ -167,13 +187,13 @@ def show_edit_modal(recipe_id):
         save_btn = st.form_submit_button("Update Recipe in Database", use_container_width=True)
         
         if save_btn:
-            # 1. UPDATE recipes table
+            # 1. UPDATE recipes table with image_url
             upd_recipe = """
                 UPDATE recipes 
-                SET title = %s, instructions = %s, prep_time = %s, servings = %s, difficulty_level = %s
+                SET title = %s, instructions = %s, image_url = %s, prep_time = %s, servings = %s, difficulty_level = %s
                 WHERE recipe_id = %s;
             """
-            execute_commit(upd_recipe, (new_title, new_instructions, new_prep, new_servings, new_diff, recipe_id))
+            execute_commit(upd_recipe, (new_title, new_instructions, new_img_url.strip() or None, new_prep, new_servings, new_diff, recipe_id))
             
             # 2. UPDATE nutrition table
             upd_nutri = """
@@ -196,7 +216,6 @@ tab1, tab2, tab3 = st.tabs(["🍽️ Recipe Feed", "➕ Add Recipe", "📊 Datab
 # TAB 1: RECIPE FEED (ENHANCED CARD UI WITH EDIT)
 # -----------------------------------------------------------------------------
 with tab1:
-    # Top Stats Row
     total_recipes = run_query("SELECT COUNT(*) AS total FROM recipes;").iloc[0]["total"]
     total_reviews = run_query("SELECT COUNT(*) AS total FROM reviews;").iloc[0]["total"]
     avg_rating = run_query("SELECT ROUND(AVG(rating), 1) AS avg_r FROM reviews;").iloc[0]["avg_r"] or 0.0
@@ -207,7 +226,6 @@ with tab1:
     m_col3.metric("Platform Rating", f"⭐ {avg_rating} / 5.0")
     st.divider()
 
-    # Filter Bar
     c1, c2 = st.columns([3, 1])
     with c1:
         search_kw = st.text_input("🔍 Search recipes by keyword:", placeholder="e.g. Pasta, Burger, Cake...")
@@ -216,8 +234,9 @@ with tab1:
         cat_list = ["All Cuisines"] + list(cat_df["category_name"].unique()) if not cat_df.empty else ["All Cuisines"]
         selected_category = st.selectbox("Filter by Category", cat_list)
 
+    # Note the addition of r.image_url in SELECT and GROUP BY
     feed_query = """
-        SELECT r.recipe_id, r.title, r.prep_time, r.difficulty_level,
+        SELECT r.recipe_id, r.title, r.image_url, r.prep_time, r.difficulty_level,
                u.username AS author, n.calories,
                GROUP_CONCAT(c.category_name SEPARATOR ', ') AS categories
         FROM recipes r
@@ -225,7 +244,7 @@ with tab1:
         LEFT JOIN nutrition n ON r.recipe_id = n.recipe_id
         LEFT JOIN recipe_categories rc ON r.recipe_id = rc.recipe_id
         LEFT JOIN categories c ON rc.category_id = c.category_id
-        GROUP BY r.recipe_id, r.title, r.prep_time, r.difficulty_level, u.username, n.calories;
+        GROUP BY r.recipe_id, r.title, r.image_url, r.prep_time, r.difficulty_level, u.username, n.calories;
     """
     recipes = run_query(feed_query)
 
@@ -243,7 +262,7 @@ with tab1:
             col = card_cols[idx % cols_per_row]
             with col:
                 with st.container(border=True):
-                    st.image(get_recipe_image(rec['title']), use_container_width=True)
+                    st.image(get_recipe_image(rec['title'], rec.get('image_url')), use_container_width=True)
                     st.markdown(f"<div class='recipe-title'>{rec['title']}</div>", unsafe_allow_html=True)
                     st.caption(f"By Chef **{rec['author']}** | *{rec['categories'] or 'General'}*")
                     
@@ -263,7 +282,7 @@ with tab1:
         st.info("No recipes found matching your search.")
 
 # -----------------------------------------------------------------------------
-# TAB 2: ADD RECIPE (DYNAMIC FORM)
+# TAB 2: ADD RECIPE (DYNAMIC FORM WITH IMAGE LINK)
 # -----------------------------------------------------------------------------
 with tab2:
     st.subheader("Submit a New Recipe to the Database")
@@ -293,6 +312,9 @@ with tab2:
             new_cats_input = st.text_input("Or add new categories (comma separated)", placeholder="e.g. Mexican, Mediterranean")
             
         instructions = st.text_area("Cooking Instructions *", placeholder="Describe how to prepare this dish step by step...")
+        
+        # Image URL input field
+        image_url_input = st.text_input("Recipe Image URL (Optional)", placeholder="https://images.unsplash.com/photo-...")
 
         st.markdown("##### Ingredients Required")
         selected_ing_ids = st.multiselect(
@@ -319,8 +341,8 @@ with tab2:
                 st.error("Please fill in all mandatory fields (*), including at least one ingredient.")
             else:
                 new_recipe_id = execute_commit(
-                    "INSERT INTO recipes (user_id, title, instructions, prep_time, servings, difficulty_level) VALUES (%s, %s, %s, %s, %s, %s);",
-                    (user_choice, title, instructions, prep_time, servings, difficulty)
+                    "INSERT INTO recipes (user_id, title, instructions, image_url, prep_time, servings, difficulty_level) VALUES (%s, %s, %s, %s, %s, %s, %s);",
+                    (user_choice, title, instructions, image_url_input.strip() or None, prep_time, servings, difficulty)
                 )
 
                 execute_commit(

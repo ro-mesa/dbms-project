@@ -85,6 +85,68 @@ WHERE recipe_id IN (
     FROM reviews 
     WHERE rating = 5
 );
+-- multirow subquerry with NOT IN: Find all recipes that have never been scheduled in any user's meal plan.
+SELECT 
+    recipe_id, 
+    title, 
+    difficulty_level 
+FROM recipes
+WHERE recipe_id NOT IN (
+    -- Subquery returns a list of recipe IDs present in meal plans
+    SELECT DISTINCT recipe_id 
+    FROM meal_plans
+    WHERE recipe_id IS NOT NULL
+);
+--multi row subquerry with ANY: Find all ingredients whose unit cost is cheaper than at least one item belonging to the 'Dairy' category.
+SELECT 
+    name AS ingredient_name, 
+    type, 
+    cost_per_unit 
+FROM ingredients
+WHERE cost_per_unit < ANY (
+    -- Subquery returns unit costs of all Dairy items
+    SELECT cost_per_unit 
+    FROM ingredients 
+    WHERE type = 'Dairy'
+);
+-- Find recipes that take longer to prepare than at least one recipe categorized as 'Hard' difficulty.
+SELECT 
+    title, 
+    prep_time, 
+    difficulty_level 
+FROM recipes
+WHERE prep_time > ANY (
+    -- Subquery returns prep times of all Hard recipes
+    SELECT prep_time 
+    FROM recipes 
+    WHERE difficulty_level = 'Hard'
+);
+-- multi row subqueery with ALL : Project Use Case: Find recipes that take strictly longer to prepare than every single recipe with an 'Easy' difficulty level.
+SELECT 
+    title, 
+    prep_time, 
+    difficulty_level 
+FROM recipes
+WHERE prep_time > ALL (
+    -- Subquery returns all prep times for 'Easy' recipes
+    SELECT prep_time 
+    FROM recipes 
+    WHERE difficulty_level = 'Easy'
+);
+--Find dishes in the nutrition table that have fewer calories than all recipes tagged as 'Fast Food' (Category ID = 3).
+SELECT 
+    r.title, 
+    n.calories, 
+    n.protein 
+FROM recipes r
+JOIN nutrition n ON r.recipe_id = n.recipe_id
+WHERE n.calories < ALL (
+    -- Subquery returns calorie counts of all Fast Food recipes
+    SELECT n2.calories 
+    FROM nutrition n2
+    JOIN recipe_categories rc ON n2.recipe_id = rc.recipe_id
+    WHERE rc.category_id = 3
+);
 -- Correlated subquery: Find recipes whose calorie count is higher than the average calories of all recipes with that same difficulty level.
 SELECT 
     r1.recipe_id, 
@@ -115,3 +177,227 @@ WHERE user_id IN (
         WHERE i.type = 'Dairy'
     )
 );
+
+--  LAB 09 ---
+-- impilicit index
+USE recipe_portal;
+-- View the implicit indexes created by table constraints
+SHOW INDEX FROM users;
+
+
+-- clustered indexes: Accelerate recipe search lookups on prep_time.
+       -- Demonstrate clustered index creation by altering a table's primary key
+       -- (Example on a demonstration table recipe_archive to preserve active relationships):
+CREATE TABLE IF NOT EXISTS recipe_archive (
+    archive_id INT NOT NULL,
+    recipe_name VARCHAR(150),
+    archived_date DATE
+);
+        -- Adding the PRIMARY KEY builds the Clustered Index
+ALTER TABLE recipe_archive ADD PRIMARY KEY (archive_id);
+
+-- non clustered index
+CREATE INDEX idx_recipes_prep_time ON recipes(prep_time);
+
+-- unique index: Ensure ingredient names remain completely distinct across the pantry catalog.
+CREATE UNIQUE INDEX idx_unique_ingredient_name ON ingredients(name);
+
+-- composite index:Accelerate lookups filtering recipes by both difficulty_level and prep_time.
+CREATE INDEX idx_difficulty_preptime ON recipes(difficulty_level, prep_time);
+
+-- full text index: Keyword searching across recipe title and cooking instructions
+CREATE FULLTEXT INDEX idx_ft_recipe_search ON recipes(title, instructions);
+    -- Example test query using the FULLTEXT index:
+SELECT title, instructions 
+FROM recipes 
+WHERE MATCH(title, instructions) AGAINST('mozzarella pasta' IN NATURAL LANGUAGE MODE);
+
+-- function based index: Optimize case-insensitive email searches that use LOWER(email).
+CREATE INDEX idx_func_lower_email ON users ((LOWER(email)));
+        -- Test query that utilizes the functional index:
+SELECT user_id, username, email 
+FROM users 
+WHERE LOWER(email) = 'ali.culinary@gmail.com';
+
+-- spatial index:Track delivery/chef coordinates in a physical location table.
+      -- Step A: Add a spatial POINT column
+ALTER TABLE users ADD COLUMN location POINT NOT NULL SRID 0;
+      -- Step B: Create the Spatial Index
+CREATE SPATIAL INDEX idx_spatial_user_loc ON users(location);
+
+
+-- bitmap index:
+CREATE INDEX idx_recipes_difficulty ON recipes(difficulty_level);
+     -- "Native BITMAP indexes are supported in DBMS engines like Oracle for data warehousing. 
+     -- MySQL InnoDB utilizes B-Tree indexes instead to achieve index-based lookups on discrete values."
+
+
+-- to view indexes:
+SHOW INDEX FROM recipes;
+SHOW INDEX FROM users;
+
+-- drop indexes:
+-- 1. Drop Non-Clustered Index
+DROP INDEX idx_recipes_prep_time ON recipes;
+-- 2. Drop Unique Index
+DROP INDEX idx_unique_ingredient_name ON ingredients;
+-- 3. Drop Composite Index
+DROP INDEX idx_difficulty_preptime ON recipes;
+-- 4. Drop Full-Text Index
+DROP INDEX idx_ft_recipe_search ON recipes;
+-- 5. Drop Function-Based Index
+DROP INDEX idx_func_lower_email ON users;
+-- 6. Drop Spatial Index and remove the temporary spatial column
+DROP INDEX idx_spatial_user_loc ON users;
+ALTER TABLE users DROP COLUMN location;
+-- 7. Drop Low-Cardinality / B-Tree Index
+DROP INDEX idx_recipes_difficulty ON recipes;
+-- 8. Drop Clustered Index (Primary Key) on demo table
+ALTER TABLE recipe_archive DROP PRIMARY KEY;
+DROP TABLE IF EXISTS recipe_archive;
+
+
+
+-- view ---
+
+-- Create a virtual table that shows a summary of recipes with author details:
+CREATE VIEW vw_recipe_catalog AS
+SELECT 
+    r.recipe_id,
+    r.title,
+    r.prep_time,
+    r.difficulty_level,
+    u.username AS author
+FROM recipes r
+JOIN users u ON r.user_id = u.user_id;
+
+
+-- view a view 
+-- Query all columns from the view
+SELECT * FROM vw_recipe_catalog;
+
+-- Add custom filtering or sorting on top of the view
+SELECT title, author 
+FROM vw_recipe_catalog 
+WHERE difficulty_level = 'Easy'
+ORDER BY prep_time ASC;
+
+
+-- simple view:
+CREATE VIEW vw_quick_recipes AS
+SELECT recipe_id, title, prep_time, servings, difficulty_level
+FROM recipes
+WHERE prep_time <= 30;
+
+
+-- complex views :Pre-calculates recipe rating summaries and calorie profiles across 4 tables
+CREATE VIEW vw_recipe_dashboard_summary AS
+SELECT 
+    r.recipe_id,
+    r.title,
+    u.username AS author,
+    n.calories,
+    COUNT(rv.review_id) AS total_reviews,
+    ROUND(AVG(rv.rating), 2) AS average_rating
+FROM recipes r
+JOIN users u ON r.user_id = u.user_id
+LEFT JOIN nutrition n ON r.recipe_id = n.recipe_id
+LEFT JOIN reviews rv ON r.recipe_id = rv.recipe_id
+GROUP BY r.recipe_id, r.title, u.username, n.calories;
+
+
+--inline view: Find recipes whose calories are above the average calories calculated inside the inline view
+SELECT 
+    r.title, 
+    n.calories, 
+    stats.avg_site_calories
+FROM recipes r
+JOIN nutrition n ON r.recipe_id = n.recipe_id
+CROSS JOIN (
+    -- Inline View / Derived Table
+    SELECT ROUND(AVG(calories), 2) AS avg_site_calories 
+    FROM nutrition
+) AS stats
+WHERE n.calories > stats.avg_site_calories;
+
+
+--materialized view: Emulated a materialized view using a physical snapshot table refreshed manually or via stored procedures/events
+-- Step 1: Create the cached snapshot table
+DROP TABLE IF EXISTS mv_recipe_performance;
+
+CREATE TABLE mv_recipe_performance AS
+SELECT 
+    r.recipe_id,
+    r.title,
+    COUNT(rv.review_id) AS review_count,
+    ROUND(AVG(rv.rating), 2) AS avg_score,
+    NOW() AS last_refreshed_at
+FROM recipes r
+LEFT JOIN reviews rv ON r.recipe_id = rv.recipe_id
+GROUP BY r.recipe_id, r.title;
+
+-- Step 2: Query it instantly (fast read from disk cache)
+SELECT * FROM mv_recipe_performance WHERE avg_score >= 4.0;
+-- Step 3: Refresh procedure (simulates REFRESH MATERIALIZED VIEW)
+-- TRUNCATE TABLE mv_recipe_performance;
+-- INSERT INTO mv_recipe_performance ...
+
+
+
+--  inspect view definition:
+     -- Method 1: Show the complete CREATE statement
+SHOW CREATE VIEW vw_recipe_catalog;
+
+    -- Method 2: Inspect via the information_schema system catalog
+SELECT table_name, view_definition 
+FROM information_schema.VIEWS 
+WHERE table_schema = 'recipe_portal' AND table_name = 'vw_recipe_catalog';
+
+
+-- update view
+     -- Using CREATE OR REPLACE VIEW:
+CREATE OR REPLACE VIEW vw_recipe_catalog AS
+SELECT 
+    r.recipe_id,
+    r.title,
+    r.prep_time,
+    r.servings,
+    r.difficulty_level,
+    u.username AS author
+FROM recipes r
+JOIN users u ON r.user_id = u.user_id;
+-- Alternatively, using ALTER VIEW:
+ALTER VIEW vw_recipe_catalog AS
+SELECT 
+    r.recipe_id,
+    r.title,
+    r.prep_time,
+    r.difficulty_level,
+    u.username AS author,
+    u.email AS author_email
+FROM recipes r
+JOIN users u ON r.user_id = u.user_id;
+
+-- drop a view:
+DROP VIEW IF EXISTS vw_recipe_catalog;
+
+-- updating data:
+-- Step A: Create an updatable simple view on ingredients
+CREATE OR REPLACE VIEW vw_ingredient_inventory AS
+SELECT ingredient_id, name, type, cost_per_unit, stock_quantity
+FROM ingredients;
+
+-- Step B: Update stock through the view
+UPDATE vw_ingredient_inventory
+SET stock_quantity = stock_quantity + 10.00
+WHERE ingredient_id = 1;
+
+-- Step C: Verify that the physical 'ingredients' base table updated
+SELECT ingredient_id, name, stock_quantity FROM ingredients WHERE ingredient_id = 1;
+
+-- security:Restrict a recipe editor so they can only see and access recipes tagged as 'Easy' or authored by their specific account
+CREATE VIEW vw_easy_recipes_only AS
+SELECT recipe_id, title, prep_time, difficulty_level
+FROM recipes
+WHERE difficulty_level = 'Easy';
+ 
