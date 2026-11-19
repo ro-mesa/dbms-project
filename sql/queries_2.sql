@@ -85,6 +85,18 @@ WHERE recipe_id IN (
     FROM reviews 
     WHERE rating = 5
 );
+-- Subquery with EXISTS: Find users who have at least one scheduled recipe in meal plans
+SELECT 
+    u.user_id, 
+    u.username, 
+    u.email 
+FROM users u
+WHERE EXISTS (
+    -- Evaluates to TRUE as soon as a matching row is found
+    SELECT 1 
+    FROM meal_plans mp 
+    WHERE mp.user_id = u.user_id
+); 
 -- multirow subquerry with NOT IN: Find all recipes that have never been scheduled in any user's meal plan.
 SELECT 
     recipe_id, 
