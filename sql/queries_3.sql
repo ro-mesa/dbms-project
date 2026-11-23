@@ -414,6 +414,12 @@ FLUSH PRIVILEGES;
 
 -- 6. Viewing Applied DCL Permissions & Roles (Lab 14 Task 1 Step 6)
 -- [NOT IMPLEMENTABLE IN MYSQL]: SQL Server queries `sys.database_permissions`,
+SELECT 
+    FROM_USER AS role_name, 
+    TO_USER AS assigned_user, 
+    TO_HOST AS host
+FROM mysql.role_edges
+WHERE TO_USER IN ('chef_app_user', 'viewer_app_user');
 -- `sys.database_principals`, and `sys.database_role_members`.
 -- MySQL Equivalents:
 SHOW GRANTS FOR 'chef_app_user'@'localhost';

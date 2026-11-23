@@ -1,0 +1,162 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>recipe_portal ERD</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: full-bleed diagram sheet under a slim header; the diagram scrolls sideways on narrow screens. */
+:root{
+  --page:#eef1f5; --canvas:#ffffff; --line:#1f2a3a; --line-soft:#b9c3d1;
+  --ent-fill:#cfe3fb; --rel-fill:#fde9a8; --attr-fill:#f7f8fa; --legend-fill:#f6f8fb;
+  --fg:#1f2a3a; --muted:#5a6678; --ui:#d5dce6;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#10151c; --canvas:#161c25; --line:#d6deea; --line-soft:#3a4556;
+  --ent-fill:#274868; --rel-fill:#5d4a17; --attr-fill:#1f2733; --legend-fill:#1b222d;
+  --fg:#e4eaf3; --muted:#98a5b8; --ui:#2b3544; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#10151c; --canvas:#161c25; --line:#d6deea; --line-soft:#3a4556;
+  --ent-fill:#274868; --rel-fill:#5d4a17; --attr-fill:#1f2733; --legend-fill:#1b222d;
+  --fg:#e4eaf3; --muted:#98a5b8; --ui:#2b3544; color-scheme:dark}
+body{background:var(--page);color:var(--fg);font-family:var(--font);
+  padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin-bottom:12px}
+.bar h1{font-size:18px;margin:0;font-weight:650;letter-spacing:-.01em}
+.bar p{margin:0;color:var(--muted);font-size:13px;min-width:0}
+.sheet{overflow-x:auto;border:1px solid var(--ui);border-radius:6px;background:var(--canvas)}
+#erd{display:block;width:100%;min-width:1500px;height:auto}
+#erd text{font-family:var(--font);fill:var(--fg)}
+#erd .ent{font-size:20px;font-weight:700;letter-spacing:.04em}
+#erd .rel{font-size:14px;font-weight:600;letter-spacing:.02em}
+#erd .attr{font-size:15px}
+#erd .card{font-size:21px;font-weight:700;fill:var(--fg)}
+#erd .t-h{font-size:34px;font-weight:700;letter-spacing:-.01em}
+#erd .t-s{font-size:16px;fill:var(--muted)}
+#erd .lg-h{font-size:18px;font-weight:700}
+#erd .lg{font-size:15px}
+#erd .lg-s{font-size:14px;fill:var(--muted)}
+</style>
+<div class="bar"><h1>recipe_portal</h1><p>Chen ERD: 8 entities, 9 relationships, 2 physical bridge tables. Scroll sideways on small screens.</p></div>
+<div class="sheet">
+<svg id="erd" viewBox="0 0 2200 1500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="erd-t erd-d">
+<title id="erd-t">recipe_portal Chen notation ERD</title>
+<desc id="erd-d">Eight entities connected by nine named relationships in Chen notation, with attributes, cardinalities and participation.</desc>
+<rect x="0" y="0" width="2200" height="1500" fill="var(--canvas)"/>
+<g id="connectors"><line x1="480.0" y1="750.0" x2="655.0" y2="750.0" stroke="var(--line)" stroke-width="2.4"/><line x1="1000.0" y1="750.0" x2="825.0" y2="750.0" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="1000.0" y1="750.0" x2="825.0" y2="750.0" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1100.0" y1="715.0" x2="1100.0" y2="552.0" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="1100.0" y1="715.0" x2="1100.0" y2="552.0" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1100.0" y1="285.0" x2="1100.0" y2="448.0" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="1100.0" y1="285.0" x2="1100.0" y2="448.0" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="398.2" y1="785.0" x2="489.5" y2="960.5" stroke="var(--line)" stroke-width="2.4"/><line x1="621.8" y1="1215.0" x2="530.5" y2="1039.5" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="621.8" y1="1215.0" x2="530.5" y2="1039.5" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1067.8" y1="785.0" x2="900.6" y2="966.7" stroke="var(--line)" stroke-width="2.4"/><line x1="672.2" y1="1215.0" x2="839.4" y2="1033.3" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="672.2" y1="1215.0" x2="839.4" y2="1033.3" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="392.6" y1="715.0" x2="454.7" y2="542.6" stroke="var(--line)" stroke-width="2.4"/><line x1="547.4" y1="285.0" x2="485.3" y2="457.4" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="547.4" y1="285.0" x2="485.3" y2="457.4" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1063.6" y1="715.0" x2="873.1" y2="531.8" stroke="var(--line)" stroke-width="2.4"/><line x1="599.2" y1="285.0" x2="805.4" y2="469.1" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="599.2" y1="285.0" x2="805.4" y2="469.1" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1200.0" y1="750.0" x2="1400.0" y2="750.0" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="1200.0" y1="750.0" x2="1400.0" y2="750.0" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1770.0" y1="750.0" x2="1570.0" y2="750.0" stroke="var(--line)" stroke-width="2.4"/><line x1="1100.0" y1="785.0" x2="1100.0" y2="948.0" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="1100.0" y1="785.0" x2="1100.0" y2="948.0" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="1100.0" y1="1215.0" x2="1100.0" y2="1052.0" stroke="var(--line)" stroke-width="2.4"/><line x1="367.4" y1="785.0" x2="305.3" y2="957.4" stroke="var(--line)" stroke-width="2.4"/><line x1="212.6" y1="1215.0" x2="274.7" y2="1042.6" stroke="var(--line)" stroke-width="7" stroke-linecap="butt"/><line x1="212.6" y1="1215.0" x2="274.7" y2="1042.6" stroke="var(--canvas)" stroke-width="3" stroke-linecap="butt"/><line x1="171.8" y1="742.3" x2="280.0" y2="746.3" stroke="var(--line)" stroke-width="1.6"/><line x1="179.6" y1="633.1" x2="320.0" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="248.3" y1="543.7" x2="357.7" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="371.0" y1="470.0" x2="378.9" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="184.1" y1="848.0" x2="310.0" y2="785.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1766.6" y1="569.1" x2="1850.0" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1922.2" y1="549.8" x2="1879.1" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="2031.6" y1="645.0" x2="1923.8" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="847.8" y1="649.1" x2="1012.5" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1239.5" y1="488.1" x2="1118.6" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1320.8" y1="565.0" x2="1141.8" y2="715.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1362.5" y1="664.7" x2="1200.0" y2="717.5" stroke="var(--line)" stroke-width="1.6"/><line x1="1349.3" y1="831.0" x2="1200.0" y2="782.5" stroke="var(--line)" stroke-width="1.6"/><line x1="1321.6" y1="935.7" x2="1141.8" y2="785.0" stroke="var(--line)" stroke-width="1.6"/><line x1="958.0" y1="1392.0" x2="1065.0" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1124.7" y1="1390.1" x2="1106.2" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1248.9" y1="1374.1" x2="1142.0" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1332.5" y1="1280.0" x2="1200.0" y2="1262.9" stroke="var(--line)" stroke-width="1.6"/><line x1="1397.9" y1="1377.7" x2="1181.7" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1011.1" y1="128.7" x2="1074.3" y2="215.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1197.6" y1="128.0" x2="1128.0" y2="215.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1333.0" y1="201.8" x2="1200.0" y2="229.3" stroke="var(--line)" stroke-width="1.6"/><line x1="1350.1" y1="282.3" x2="1200.0" y2="262.9" stroke="var(--line)" stroke-width="1.6"/><line x1="1307.8" y1="358.0" x2="1167.3" y2="285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="446.9" y1="1375.9" x2="586.3" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="590.4" y1="1390.4" x2="627.6" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="729.3" y1="1371.7" x2="665.7" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="800.7" y1="1250.0" x2="740.0" y2="1250.0" stroke="var(--line)" stroke-width="1.6"/><line x1="511.1" y1="119.5" x2="546.9" y2="215.0" stroke="var(--line)" stroke-width="1.6"/><line x1="642.6" y1="113.8" x2="581.2" y2="215.0" stroke="var(--line)" stroke-width="1.6"/><line x1="767.7" y1="186.1" x2="660.0" y2="219.2" stroke="var(--line)" stroke-width="1.6"/><line x1="135.5" y1="1371.0" x2="181.3" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="257.8" y1="1390.5" x2="214.4" y2="1285.0" stroke="var(--line)" stroke-width="1.6"/><line x1="123.5" y1="1129.2" x2="177.8" y2="1215.0" stroke="var(--line)" stroke-width="1.6"/><line x1="350.0" y1="1250.0" x2="300.0" y2="1250.0" stroke="var(--line)" stroke-width="1.6"/><line x1="1342.7" y1="1048.5" x2="1164.1" y2="1012.8" stroke="var(--line)" stroke-width="1.6"/><line x1="1358.3" y1="1137.8" x2="1145.4" y2="1024.2" stroke="var(--line)" stroke-width="1.6"/></g>
+<g id="relationships">
+<polygon points="740,698 825,750 740,802 655,750" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="740" y="755" text-anchor="middle" class="rel">CREATES</text>
+<polygon points="1100,448 1185,500 1100,552 1015,500" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="1100" y="505" text-anchor="middle" class="rel">HAS_PROFILE</text>
+<polygon points="1100,948 1185,1000 1100,1052 1015,1000" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="1100" y="1005" text-anchor="middle" class="rel">CONTAINS</text>
+<polygon points="510,948 595,1000 510,1052 425,1000" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="510" y="1005" text-anchor="middle" class="rel">WRITES</text>
+<polygon points="870,948 955,1000 870,1052 785,1000" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="870" y="1005" text-anchor="middle" class="rel">RECEIVES</text>
+<polygon points="470,448 555,500 470,552 385,500" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="470" y="505" text-anchor="middle" class="rel">SCHEDULES</text>
+<polygon points="840,448 925,500 840,552 755,500" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="840" y="505" text-anchor="middle" class="rel">INCLUDED_IN</text>
+<polygon points="1485,698 1570,750 1485,802 1400,750" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="1485" y="755" text-anchor="middle" class="rel">CATEGORIZED_AS</text>
+<polygon points="290,948 375,1000 290,1052 205,1000" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2.2"/><text x="290" y="1005" text-anchor="middle" class="rel">TRIGGERS</text>
+</g>
+<g id="entities">
+<rect x="280.0" y="715.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="380" y="757" text-anchor="middle" class="ent">USERS</text>
+<rect x="1770.0" y="715.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="1870" y="757" text-anchor="middle" class="ent">CATEGORIES</text>
+<rect x="1000.0" y="715.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="1100" y="757" text-anchor="middle" class="ent">RECIPES</text>
+<rect x="1000.0" y="1215.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="1100" y="1257" text-anchor="middle" class="ent">INGREDIENTS</text>
+<rect x="1000.0" y="215.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="1100" y="257" text-anchor="middle" class="ent">NUTRITION</text>
+<rect x="540.0" y="1215.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="640" y="1257" text-anchor="middle" class="ent">REVIEWS</text>
+<rect x="460.0" y="215.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="560" y="257" text-anchor="middle" class="ent">MEAL_PLANS</text>
+<rect x="100.0" y="1215.0" width="200" height="70" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2.6"/><text x="200" y="1257" text-anchor="middle" class="ent">AUDIT_LOGS</text>
+</g>
+<g id="attributes">
+<ellipse cx="110" cy="740" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="110" y="745" text-anchor="middle" class="attr pk" text-decoration="underline">user_id</text>
+<ellipse cx="140" cy="610" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="140" y="615" text-anchor="middle" class="attr">username</text>
+<ellipse cx="230" cy="515" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="230" y="520" text-anchor="middle" class="attr">email</text>
+<ellipse cx="370" cy="440" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="370" y="445" text-anchor="middle" class="attr">role</text>
+<ellipse cx="140" cy="870" rx="65.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="140" y="875" text-anchor="middle" class="attr">created_at</text>
+<ellipse cx="1750" cy="540" rx="69.3" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1750" y="545" text-anchor="middle" class="attr pk" text-decoration="underline">category_id</text>
+<ellipse cx="1930" cy="520" rx="77.9" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1930" y="525" text-anchor="middle" class="attr">category_name</text>
+<ellipse cx="2070" cy="620" rx="69.3" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="2070" y="625" text-anchor="middle" class="attr">description</text>
+<ellipse cx="800" cy="630" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="800" y="635" text-anchor="middle" class="attr pk" text-decoration="underline">recipe_id</text>
+<ellipse cx="1255" cy="459" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1255" y="464" text-anchor="middle" class="attr">title</text>
+<ellipse cx="1353" cy="538" rx="73.6" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1353" y="543" text-anchor="middle" class="attr">instructions</text>
+<ellipse cx="1414" cy="648" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1414" y="653" text-anchor="middle" class="attr">prep_time</text>
+<ellipse cx="1414" cy="852" rx="90.8" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1414" y="857" text-anchor="middle" class="attr">difficulty_level</text>
+<ellipse cx="1353" cy="962" rx="65.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1353" y="967" text-anchor="middle" class="attr">created_at</text>
+<ellipse cx="930" cy="1420" rx="77.9" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="930" y="1425" text-anchor="middle" class="attr pk" text-decoration="underline">ingredient_id</text>
+<ellipse cx="1130" cy="1420" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1130" y="1425" text-anchor="middle" class="attr">name</text>
+<ellipse cx="1280" cy="1400" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1280" y="1405" text-anchor="middle" class="attr">type</text>
+<ellipse cx="1410" cy="1290" rx="82.2" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1410" y="1295" text-anchor="middle" class="attr">stock_quantity</text>
+<ellipse cx="1450" cy="1400" rx="77.9" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1450" y="1405" text-anchor="middle" class="attr">cost_per_unit</text>
+<ellipse cx="990" cy="100" rx="73.6" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="990" y="105" text-anchor="middle" class="attr pk" text-decoration="underline">nutrition_id</text>
+<ellipse cx="1220" cy="100" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1220" y="105" text-anchor="middle" class="attr">calories</text>
+<ellipse cx="1390" cy="190" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1390" y="195" text-anchor="middle" class="attr">protein</text>
+<ellipse cx="1410" cy="290" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1410" y="295" text-anchor="middle" class="attr">carbs</text>
+<ellipse cx="1350" cy="380" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1350" y="385" text-anchor="middle" class="attr">fats</text>
+<ellipse cx="410" cy="1400" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="410" y="1405" text-anchor="middle" class="attr pk" text-decoration="underline">review_id</text>
+<ellipse cx="580" cy="1420" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="580" y="1425" text-anchor="middle" class="attr">rating</text>
+<ellipse cx="750" cy="1400" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="750" y="1405" text-anchor="middle" class="attr">comment</text>
+<ellipse cx="870" cy="1250" rx="69.3" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="870" y="1255" text-anchor="middle" class="attr">review_date</text>
+<ellipse cx="500" cy="90" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="500" y="95" text-anchor="middle" class="attr pk" text-decoration="underline">plan_id</text>
+<ellipse cx="660" cy="85" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="660" y="90" text-anchor="middle" class="attr">meal_date</text>
+<ellipse cx="820" cy="170" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="820" y="175" text-anchor="middle" class="attr">meal_type</text>
+<ellipse cx="120" cy="1400" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="120" y="1405" text-anchor="middle" class="attr pk" text-decoration="underline">log_id</text>
+<ellipse cx="270" cy="1420" rx="69.3" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="270" y="1425" text-anchor="middle" class="attr">action_type</text>
+<ellipse cx="105" cy="1100" rx="82.2" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="105" y="1105" text-anchor="middle" class="attr">table_affected</text>
+<ellipse cx="415" cy="1250" rx="65.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="415" y="1255" text-anchor="middle" class="attr">changed_at</text>
+<ellipse cx="1400" cy="1060" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1400" y="1065" text-anchor="middle" class="attr">quantity</text>
+<ellipse cx="1400" cy="1160" rx="62.0" ry="30" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/><text x="1400" y="1165" text-anchor="middle" class="attr">unit</text>
+</g>
+<g id="cardinality">
+<text x="510.0" y="774.0" text-anchor="middle" class="card">1</text>
+<text x="970.0" y="740.0" text-anchor="middle" class="card">N</text>
+<text x="1083.0" y="692.0" text-anchor="middle" class="card">1</text>
+<text x="1083.0" y="322.0" text-anchor="middle" class="card">1</text>
+<text x="397.0" y="826.5" text-anchor="middle" class="card">1</text>
+<text x="623.0" y="1187.5" text-anchor="middle" class="card">N</text>
+<text x="1060.0" y="825.6" text-anchor="middle" class="card">1</text>
+<text x="680.0" y="1188.4" text-anchor="middle" class="card">N</text>
+<text x="418.8" y="699.5" text-anchor="middle" class="card">1</text>
+<text x="521.2" y="314.5" text-anchor="middle" class="card">N</text>
+<text x="1053.8" y="689.0" text-anchor="middle" class="card">1</text>
+<text x="610.3" y="324.7" text-anchor="middle" class="card">N</text>
+<text x="1230.0" y="774.0" text-anchor="middle" class="card">M</text>
+<text x="1740.0" y="740.0" text-anchor="middle" class="card">N</text>
+<text x="1083.0" y="822.0" text-anchor="middle" class="card">M</text>
+<text x="1117.0" y="1192.0" text-anchor="middle" class="card">N</text>
+<text x="341.2" y="814.5" text-anchor="middle" class="card">1</text>
+<text x="238.8" y="1199.5" text-anchor="middle" class="card">N</text>
+</g>
+<g id="legend" transform="translate(28,28)">
+<rect x="0" y="0" width="368" height="366" rx="6" fill="var(--legend-fill)" stroke="var(--line-soft)" stroke-width="1.5"/>
+<text x="18" y="32" class="lg-h">Legend: Chen notation</text>
+<rect x="18" y="52" width="66" height="28" fill="var(--ent-fill)" stroke="var(--line)" stroke-width="2"/>
+<text x="102" y="71" class="lg">Entity (strong), uppercase name</text>
+<polygon points="51,85 84,102 51,119 18,102" fill="var(--rel-fill)" stroke="var(--line)" stroke-width="2"/>
+<text x="102" y="107" class="lg">Relationship, verb inside diamond</text>
+<ellipse cx="51" cy="138" rx="33" ry="15" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/>
+<text x="102" y="143" class="lg">Attribute</text>
+<ellipse cx="51" cy="174" rx="33" ry="15" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8"/>
+<text x="51" y="179" text-anchor="middle" class="attr pk" text-decoration="underline" font-size="14">id</text>
+<text x="102" y="179" class="lg">Primary key attribute (underlined)</text>
+<ellipse cx="51" cy="210" rx="34" ry="16" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.6"/>
+<ellipse cx="51" cy="210" rx="29" ry="12" fill="none" stroke="var(--line)" stroke-width="1.6"/>
+<text x="102" y="215" class="lg">Multivalued attribute (double oval)</text>
+<ellipse cx="51" cy="246" rx="33" ry="15" fill="var(--attr-fill)" stroke="var(--line)" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="102" y="251" class="lg">Derived attribute (dashed oval)</text>
+<line x1="18" y1="282" x2="84" y2="282" stroke="var(--line)" stroke-width="2.4"/>
+<text x="102" y="287" class="lg">Partial (optional) participation</text>
+<line x1="18" y1="318" x2="84" y2="318" stroke="var(--line)" stroke-width="7"/><line x1="18" y1="318" x2="84" y2="318" stroke="var(--canvas)" stroke-width="3"/>
+<text x="102" y="323" class="lg">Total (mandatory) participation</text>
+<text x="18" y="358" class="lg"><tspan class="card" font-size="18">1</tspan>, <tspan class="card" font-size="18">N</tspan>, <tspan class="card" font-size="18">M</tspan>  cardinality ratio at each end</text>
+<text x="18" y="384" class="lg-s">Foreign keys appear as relationship lines only.</text>
+<text x="18" y="404" class="lg-s">No multivalued or derived attributes in this schema.</text>
+</g>
+<g id="title">
+<text x="2170" y="62" text-anchor="end" class="t-h">recipe_portal</text>
+<text x="2170" y="92" text-anchor="end" class="t-s">Entity-relationship diagram · Chen notation · MySQL · 10 tables</text>
+</g>
+<g id="note">
+<text x="2170" y="1420" text-anchor="end" class="lg-s">Physical bridge tables: recipe_categories implements CATEGORIZED_AS,</text>
+<text x="2170" y="1442" text-anchor="end" class="lg-s">recipe_ingredients implements CONTAINS (quantity, unit).</text>
+</g>
+</svg>
+</div>
+
+</body></html>
